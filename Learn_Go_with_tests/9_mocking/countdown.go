@@ -17,6 +17,15 @@ func (d *DefaultSleeper) Sleep() {
 	time.Sleep(1 * time.Second)
 }
 
+type ConfigurableSleeper struct {
+	duration time.Duration
+	sleep    func(time.Duration)
+}
+
+func (c *ConfigurableSleeper) Sleep() {
+	c.sleep(c.duration)
+}
+
 const countdownStart = 3
 const finalWord = "Go!"
 
@@ -29,6 +38,11 @@ func Countdown(out io.Writer, sleeper Sleeper) {
 }
 
 func main() {
-	sleeper := &DefaultSleeper{}
+	//** old way
+	// sleeper := &DefaultSleeper{}
+	// Countdown(os.Stdout, sleeper)
+
+	//** new way
+	sleeper := &ConfigurableSleeper{2 * time.Second, time.Sleep}
 	Countdown(os.Stdout, sleeper)
 }
